@@ -23,6 +23,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'mfussenegger/nvim-dap-python',
   },
   keys = function(_, keys)
     local dap = require 'dap'
@@ -113,5 +114,14 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+    -- Install python specific config
+    local function get_python_path()
+      -- Run `which python` command and trim any newline from the result
+      local python_path = vim.fn.system('which python'):gsub('%s+', '')
+      -- Fallback to a default path if `which python` fails
+      return python_path
+    end
+
+    require('dap-python').setup(get_python_path())
   end,
 }
