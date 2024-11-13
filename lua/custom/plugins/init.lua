@@ -29,4 +29,17 @@ return {
       require('diffview').setup {}
     end,
   },
+  {
+    'github/copilot.vim',
+    config = function()
+      vim.api.nvim_set_keymap('n', '<leader>tcd', ':Copilot disable', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>tce', ':Copilot disable', { noremap = true, silent = true })
+    end,
+  },
+  {
+    'mbbill/undotree',
+    config = function()
+      vim.api.nvim_set_keymap('n', '<leader>u', ':UndotreeToggle<CR>', { noremap = true, silent = true })
+    end,
+  },
 }
