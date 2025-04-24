@@ -91,16 +91,16 @@ return {
     }
 
     -- Change breakpoint icons
-    -- vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
-    -- vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
-    -- local breakpoint_icons = vim.g.have_nerd_font
-    --     and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
-    --   or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
-    -- for type, icon in pairs(breakpoint_icons) do
-    --   local tp = 'Dap' .. type
-    --   local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
-    --   vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
-    -- end
+    vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
+    vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
+    local breakpoint_icons = vim.g.have_nerd_font
+        and { Breakpoint = '', BreakpointCondition = '', BreakpointRejected = '', LogPoint = '', Stopped = '' }
+      or { Breakpoint = '●', BreakpointCondition = '⊜', BreakpointRejected = '⊘', LogPoint = '◆', Stopped = '⭔' }
+    for type, icon in pairs(breakpoint_icons) do
+      local tp = 'Dap' .. type
+      local hl = (type == 'Stopped') and 'DapStop' or 'DapBreak'
+      vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
+    end
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
@@ -123,5 +123,30 @@ return {
     end
 
     require('dap-python').setup(get_python_path())
+    -- Adiciona a configuração customizada de attach para seu serviço
+    dap.adapters.python = {
+      type = 'executable',
+      command = 'python',
+      args = { '-m', 'debugpy.adapter' },
+    }
+
+    dap.configurations.python = {
+      {
+        type = 'python',
+        request = 'attach',
+        name = 'Attach to My Service',
+        connect = {
+          host = 'localhost',
+          port = 5678,
+        },
+        pathMappings = {
+          {
+            localRoot = '${workspaceFolder}/app', -- ou use vim.fn.getcwd() .. '/app' se preferir
+            remoteRoot = '/code/app',
+          },
+        },
+        justMyCode = false,
+      },
+    }
   end,
 }
